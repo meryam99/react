@@ -1,12 +1,11 @@
 //* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+
 import { useState } from 'react';
 import './App.scss';
 
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-
 
 // const products = productsFromServer.map((product) => {
 //   const category = null; // find by product.categoryId
@@ -37,13 +36,14 @@ export const App = () => {
   );
 
   const [selectedUser, setSelectedUser] = useState(null);
+  const [query, setQuery] = useState('')
 
-  const filterProducts =
+  const filteredProductsByUsers =
     selectedUser === null
       ? preparedProducts
       : preparedProducts.filter(product => product.owner.id === selectedUser);
 
-
+  const filteredProducts = filteredProductsByUsers.filter(product => product.name.trim().toLowerCase().includes(query.toLowerCase()))
 
   return (
     <div className="section">
@@ -55,9 +55,11 @@ export const App = () => {
             <p className="panel-heading">Filters</p>
 
             <p className="panel-tabs has-text-weight-bold">
-              <a data-cy="FilterAllUsers" href="#/"
-                  onClick={() => setSelectedUser(null)}
-                >
+              <a
+                data-cy="FilterAllUsers"
+                href="#/"
+                onClick={() => setSelectedUser(null)}
+              >
                 All
               </a>
 
@@ -67,12 +69,13 @@ export const App = () => {
                   data-cy="FilterUser"
                   href="#/"
                   className={selectedUser === user.id ? 'is-active' : ''}
-                  onClick={() => {setSelectedUser(user.id)}}
+                  onClick={() => {
+                    setSelectedUser(user.id);
+                  }}
                 >
-                {user.name}
-              </a>
-                  ))}
-
+                  {user.name}
+                </a>
+              ))}
             </p>
 
             <div className="panel-block">
@@ -81,8 +84,13 @@ export const App = () => {
                   data-cy="SearchField"
                   type="text"
                   className="input"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value)
+
+                  }}
                   placeholder="Search"
-                  value="qwe"
+
                 />
 
                 <span className="icon is-left">
@@ -203,7 +211,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {filterProducts.map(product => (
+              {filteredProducts.map(product => (
                 <tr key={product.id} data-cy="Product">
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}

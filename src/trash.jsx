@@ -1,4 +1,4 @@
-//* eslint-disable jsx-a11y/accessible-emoji */
+/* eslint-disable jsx-a11y/accessible-emoji */
 import React from 'react';
 import './App.scss';
 
@@ -15,7 +15,7 @@ import usersFromServer from './api/users';
 function getPreparedProducts(products, categories, users) {
   return productsFromServer.map(product => {
     const category = categoriesFromServer.find(category => product.categoryId === category.id) ?? null;
-    const owner = category ? usersFromServer.find(user => user.id === category.ownerId) : null;
+    const owner = category ? usersFromServer.find(user => user.id === category.ownerId) ?? null;
 
     return {
       ...product,
@@ -218,16 +218,7 @@ const preparedProducts = getPreparedProducts(productsFromServer, categoriesFromS
         {product.category.icon} - {product.category.title}
       </td>
 
-      <td
-        data-cy="ProductUser"
-         className={
-    product.owner
-      ? product.owner.sex === 'm'
-        ? 'has-text-link'
-        : 'has-text-danger'
-      : ''
-  }
->
+      <td data-cy="ProductUser" className="has-text-link">
         {product.owner.name}
       </td>
     </tr>
